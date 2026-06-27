@@ -122,11 +122,13 @@ fi
 alias ..="cd .."
 alias cls="clear"
 alias rm="rm -i"
+alias free="free -h --si"
 alias python="python3"
-alias speedtest="speedtest-cli --simple --no-upload"
 alias tree='tree -F --dirsfirst | less'
+alias speedtest="speedtest-cli --simple --no-upload"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+eval "$(fzf --bash)"
 alias fzf="fzf --height 40% -m --style full --preview 'fzf-preview.sh {}'"
 alias v='vim -p $(fzf)'
 alias bat='batcat'
