@@ -1,4 +1,5 @@
-neofetch
+# fastfetch
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -9,6 +10,27 @@ case $- in
       *) return;;
 esac
 
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+# User specific aliases and functions
+if [ -d ~/.bashrc.d ]; then
+    for rc in ~/.bashrc.d/*; do
+        if [ -f "$rc" ]; then
+            . "$rc"
+        fi
+    done
+fi
+unset rc
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -17,11 +39,11 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000000
-HISTFILESIZE=2000000000
+export HISTSIZE=-1
+export HISTFILESIZE=-1
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
+# check the window size after each command and, if necessary, 
+# update the values of LINES and COLUMNS. 
 shopt -s checkwinsize
 
 # If set, the pattern "**" used in a pathname expansion context will
@@ -30,6 +52,9 @@ shopt -s checkwinsize
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
@@ -58,7 +83,6 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 # if [ "$color_prompt" = yes ]; then
-#     # PS1="bulk@bulk $ "
 #     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 # else
 #     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
@@ -78,8 +102,8 @@ fi
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls -1 --color=auto --group-directories-first --human-readable  --indicator-style=slash'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -119,44 +143,24 @@ if ! shopt -oq posix; then
 fi
 
 
+# User aliases
 alias ..="cd .."
 alias cls="clear"
 alias rm="rm -i"
 alias free="free -h --si"
 alias copy="xclip -selection clipboard "
-alias python="python3"
-alias tree='tree -F --dirsfirst | less'
+alias tree="tree -F --dirsfirst | less"
 alias speedtest="speedtest-cli --simple --no-upload"
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-eval "$(fzf --bash)"
-alias fzf="fzf --height 40% -m --style full --preview 'fzf-preview.sh {}'"
-alias v='vim -p $(fzf)'
-alias bat='batcat'
+# alias v="vim -p $(fzf)"
+# alias bat="batcat"
 
-# alias home-db="cd $HOME/Projects/Home-DB-Kotlin"
-# alias home-db-alias="alias vkt='vim ./src/main/kotlin/Main.kt'; alias ckt='kotlinc $(find ./src/main/kotlin -name "*.kt") -classpath libs/sqlite-jdbc-3.53.2.0.jar -d build/classes -jvm-target 21'; alias rkt='kotlin -classpath "./libs/sqlite-jdbc-3.53.2.0.jar:./build/classes" MainKt'"
 
-_home_db_compile() {
-    kotlinc \
-        $(find ./src/main/kotlin -name "*.kt") \
-        -classpath libs/sqlite-jdbc-3.53.2.0.jar \
-        -d ./build/classes \
-        -jvm-target 21
-}
-
-home_db() {
-    cd "$HOME/Projects/Home-DB-Kotlin" || return
-
-    alias ckt='_home_db_compile '
-    alias rkt='kotlin -classpath "./libs/sqlite-jdbc-3.53.2.0.jar:./build/classes" homedb.MainKt'
-}
-
-PS1='\n$( [[ -n $SSH_CLIENT ]] && echo "[ssh] " )\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\h\[\033[00m\]: \[\033[01;34m\]\w\[\033[00m\]\n\$ '
+PS1='$( [[ -n $SSH_CLIENT ]] && echo "[ssh] " )\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\h\[\033[00m\]: \[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
 # Prompt command
 _prompt_command() {
-	local user='bulk'
+	local user=${USER}
 	local host=${HOSTNAME%%.*}
 	local pwd=${PWD/#$HOME/\~}
 	local ssh=
@@ -167,5 +171,8 @@ PROMPT_COMMAND=_prompt_command
 # \[\033[01;32m\]\u@\h\[\033[00m\]
 # \[\033[01;34m\]\w\[\033[00m\]
 
-export PATH="$HOME/.local/share/kotlinc/bin:$PATH"
+# Set up fzf key bindings and fuzzy completion
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+eval "$(fzf --bash)"
+alias fzf="fzf --height 40% -m --style full --preview 'fzf-preview.sh {}'"
 
