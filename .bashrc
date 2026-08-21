@@ -123,6 +123,7 @@ alias ..="cd .."
 alias cls="clear"
 alias rm="rm -i"
 alias free="free -h --si"
+alias copy="xclip -selection clipboard "
 alias python="python3"
 alias tree='tree -F --dirsfirst | less'
 alias speedtest="speedtest-cli --simple --no-upload"
