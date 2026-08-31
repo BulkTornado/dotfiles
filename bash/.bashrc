@@ -153,7 +153,11 @@ alias tree="tree -F --dirsfirst | less"
 alias speedtest="speedtest-cli --simple --no-upload"
 
 # alias v="vim -p $(fzf)"
-# alias bat="batcat"
+
+# Normalize Debian/Ubuntu's `batcat` name to `bat`.
+if ! command -v bat >/dev/null 2>&1 && command -v batcat >/dev/null 2>&1; then
+    alias bat='batcat'
+fi
 
 
 PS1='$( [[ -n $SSH_CLIENT ]] && echo "[ssh] " )\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\h\[\033[00m\]: \[\033[01;34m\]\w\[\033[00m\]\n\$ '
