@@ -180,3 +180,6 @@ PROMPT_COMMAND=_prompt_command
 eval "$(fzf --bash)"
 alias fzf="fzf --height 40% -m --style full --preview 'bat --color=always --style=numbers {}'"
 
+
+# Set up starship
+eval "$(starship init bash)"
